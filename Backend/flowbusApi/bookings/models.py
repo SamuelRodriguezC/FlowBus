@@ -9,6 +9,7 @@ class Bus(models.Model):
     features =  models.TextField()
     start_time = models.TimeField()
     reach_time = models.TimeField()
+    total_seats = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     
     def __str__(self): 
