@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
             name='Seat',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('seat_numer', models.CharField(max_length=10)),
+                ('seat_number', models.CharField(max_length=10)),
                 ('is_booked', models.BooleanField(default=False)),
                 ('bus', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='seats', to='bookings.bus')),
             ],
