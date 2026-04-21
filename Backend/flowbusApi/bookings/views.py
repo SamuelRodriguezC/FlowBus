@@ -12,7 +12,7 @@ from rest_framework.authtoken.models import Token
 
 # status: contiene constantes para códigos HTTP (HTTP_200_OK, HTTP_404_NOT_FOUND, etc.).
 # generics: provee vistas genéricas listas para CRUD (ListAPIView, CreateAPIView, etc.).
-from rest_framework import status, generics  
+from rest_framework import status, generics
 
 # Clase base para crear vistas API personalizadas en DRF.
 # Permite definir manualmente métodos como get(), post(), put(), delete().
@@ -20,8 +20,8 @@ from rest_framework.views import APIView
 
 from rest_framework.response import Response
 
-from .serializers import UserRegisterSerializer, BusSerializer
-from .models import Bus
+from .serializers import UserRegisterSerializer, BusSerializer, BookingSerializer
+from .models import Bus, Seat, Booking
 
 class RegisterView(APIView): 
     def post(self, request): 
@@ -56,3 +56,31 @@ class BusListCreateView(generics.ListCreateAPIView):
 class BusDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Bus.objects.all()
     serializer_class = BusSerializer
+    
+class BookingView(APIView): 
+    permission_classes = [IsAuthenticated] # Permite acceder a esta vista solo a usuarios autenticados
+    
+    def post(self, request): # Para el método post 
+        seat_id = request.data.get('seat') # Obtiene el ID del asiento enviado en el body de la petición
+        try: 
+            seat = Seat.objects.get(id = seat_id) # Busca el asiento en la base de datos por su ID
+            if seat.is_booked: # Verifica si el asiento ya está reservado
+                return Response({'error': 'Seat already booked'},  status = status.HTTP_400_BAD_REQUEST) # Lanzar error
+            seat.is_booked = True # Marca el asiento como reservado
+            seat.save() #guardamos en DB
+            
+            # Crea una reserva asociando el usuario autenticado,
+            # el bus del asiento y el asiento seleccionado
+            bookings =  Booking.objects.create(
+                user = request.user,
+                bus = seat.bus,
+                seat = seat
+            )
+            # Serializamos las reservas
+            serializer = BookingSerializer(bookings)
+            
+            # Devolvermos respuesta Created
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        except seat.DoesNotExist: 
+            # Si el asiento no existe lanzar error 
+            return Response({'error': 'Invalid Seat ID'}, status = status.HTTP_400_BAD_REQUEST)
