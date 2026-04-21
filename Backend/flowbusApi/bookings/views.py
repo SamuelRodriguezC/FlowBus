@@ -49,7 +49,7 @@ class LoginView(APIView):
         
         
 class BusListCreateView(generics.ListCreateAPIView): 
-    queriset = Bus.objects.all()
+    queryset = Bus.objects.all()
     serializer_class = BusSerializer
     
     
@@ -81,7 +81,7 @@ class BookingView(APIView):
             
             # Devolvermos respuesta Created
             return Response(serializer.data, status = status.HTTP_201_CREATED)
-        except seat.DoesNotExist: 
+        except Seat.DoesNotExist: 
             # Si el asiento no existe lanzar error 
             return Response({'error': 'Invalid Seat ID'}, status = status.HTTP_400_BAD_REQUEST)
 
