@@ -84,3 +84,15 @@ class BookingView(APIView):
         except seat.DoesNotExist: 
             # Si el asiento no existe lanzar error 
             return Response({'error': 'Invalid Seat ID'}, status = status.HTTP_400_BAD_REQUEST)
+
+class UserBookingView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, user_id): 
+        if request.user.id  != user_id
+            return Response({'error': 'Unauthorized'}, status = status.HTTP_401_UNAUTHORIZED)
+    
+        bookings = Booking.objects.filter(user_id = user_id)
+        serializer = BookingSerializer(bookings, many = True)
+        return Response(serializer.data)
+        
