@@ -20,7 +20,8 @@ from rest_framework.views import APIView
 
 from rest_framework.response import Response
 
-from .serializers import UserRegisterSerializer
+from .serializers import UserRegisterSerializer, BusSerializer
+from .models import Bus
 
 class RegisterView(APIView): 
     def post(self, request): 
@@ -45,3 +46,13 @@ class LoginView(APIView):
             }, status  = status.HTTP_200_OK)
         else: 
             return Response({'error': 'Invalid Credentials'}, status = status.HTTP_401_UNAUTHORIZED)
+        
+        
+class BusListCreateView(generics.ListCreateAPIView): 
+    queriset = Bus.objects.all()
+    serializer_class = BusSerializer
+    
+    
+class BusDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Bus.objects.all()
+    serializer_class = BusSerializer
