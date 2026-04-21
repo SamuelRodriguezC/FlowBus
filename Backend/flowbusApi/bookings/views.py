@@ -89,7 +89,7 @@ class UserBookingView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request, user_id): 
-        if request.user.id  != user_id
+        if request.user.id  != user_id:
             return Response({'error': 'Unauthorized'}, status = status.HTTP_401_UNAUTHORIZED)
     
         bookings = Booking.objects.filter(user_id = user_id)
