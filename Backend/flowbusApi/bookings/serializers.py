@@ -3,7 +3,7 @@ from .models import Bus, Seat
 from django.contrib.auth.models import User 
 
 # Sreializador de usuarios para permirit el registro desde la API
-class UserSerializer(serializers.ModelSerializer): 
+class UserRegisterSerializer(serializers.ModelSerializer): 
     password = serializers.CharField(write_only=True) # La contraseña no se expone en las respuestas 
     
     class Meta: 
